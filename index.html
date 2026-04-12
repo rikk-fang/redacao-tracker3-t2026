@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<!-- Created by Fang and Claw 2026 -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redação Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface: #18181f;
+    --surface2: #22222c;
+    --border: #2e2e3a;
+    --text: #e8e8f0;
+    --text-muted: #7a7a96;
+    --accent: #7c6af7;
+    --accent-glow: rgba(124,106,247,0.15);
+
+    --c-green: #22c55e;
+    --c-teal: #14b8a6;
+    --c-yellow: #eab308;
+    --c-orange: #f97316;
+    --c-red: #ef4444;
+    --c-darkred: #7f1d1d;
+    --c-gray: #4b5563;
+
+    --c-green-bg: rgba(34,197,94,0.12);
+    --c-teal-bg: rgba(20,184,166,0.12);
+    --c-yellow-bg: rgba(234,179,8,0.12);
+    --c-orange-bg: rgba(249,115,22,0.12);
+    --c-red-bg: rgba(239,68,68,0.12);
+    --c-gray-bg: rgba(75,85,99,0.12);
+  }
+
+  .light {
+    --bg: #f4f4f8;
+    --surface: #ffffff;
+    --surface2: #ebebf3;
+    --border: #d4d4e0;
+    --text: #1a1a2e;
+    --text-muted: #6b6b8a;
+    --accent: #6355e0;
+    --accent-glow: rgba(99,85,224,0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* HEADER */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .brand {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .brand-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .brand-title span { color: var(--accent); }
+
+  .brand-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .refresh-info {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-align: right;
+  }
+
+  .btn-icon {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    transition: all 0.2s;
+  }
+  .btn-icon:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 2rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .tab {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.85rem 1.25rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* MAIN */
+  main { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* FILTERS BAR */
+  .filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 0.25rem;
+  }
+
+  .pill {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .pill:hover { border-color: var(--accent); color: var(--accent); }
+  .pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  select.pill {
+    appearance: none;
+    padding-right: 1.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a7a96'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+  }
+
+  /* TIER GRID */
+  .tier-section { margin-bottom: 2rem; }
+
+  .tier-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .tier-badge {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  .tier-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .student-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .student-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .student-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); border-color: var(--accent); }
+
+  .card-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+  }
+
+  .card-id {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .card-score {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+
+  .card-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* COLORS */
+  .lvl-excelente { color: var(--c-green); background: var(--c-green-bg); border-color: rgba(34,197,94,0.3); }
+  .lvl-excelente::before { background: var(--c-green); }
+  .lvl-bom { color: var(--c-teal); background: var(--c-teal-bg); border-color: rgba(20,184,166,0.3); }
+  .lvl-bom::before { background: var(--c-teal); }
+  .lvl-mediano { color: var(--c-yellow); background: var(--c-yellow-bg); border-color: rgba(234,179,8,0.3); }
+  .lvl-mediano::before { background: var(--c-yellow); }
+  .lvl-insuficiente { color: var(--c-orange); background: var(--c-orange-bg); border-color: rgba(249,115,22,0.3); }
+  .lvl-insuficiente::before { background: var(--c-orange); }
+  .lvl-precario { color: var(--c-red); background: var(--c-red-bg); border-color: rgba(239,68,68,0.3); }
+  .lvl-precario::before { background: var(--c-red); }
+  .lvl-ausente { color: var(--text-muted); background: var(--c-gray-bg); }
+
+  .badge-excelente { background: var(--c-green-bg); color: var(--c-green); border: 1px solid rgba(34,197,94,0.3); }
+  .badge-bom { background: var(--c-teal-bg); color: var(--c-teal); border: 1px solid rgba(20,184,166,0.3); }
+  .badge-mediano { background: var(--c-yellow-bg); color: var(--c-yellow); border: 1px solid rgba(234,179,8,0.3); }
+  .badge-insuficiente { background: var(--c-orange-bg); color: var(--c-orange); border: 1px solid rgba(249,115,22,0.3); }
+  .badge-precario { background: var(--c-red-bg); color: var(--c-red); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-ausente { background: var(--c-gray-bg); color: var(--text-muted); border: 1px solid var(--border); }
+
+  /* ALUNO PANEL */
+  .student-selector {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  select.select-styled {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.5rem 2rem 0.5rem 0.85rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a7a96'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    min-width: 200px;
+  }
+
+  .student-overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .student-overview { grid-template-columns: 1fr; }
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+  }
+
+  /* PROPOSALS TABLE */
+  .proposals-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+  }
+
+  .proposals-table th {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 0.6rem 0.85rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .proposals-table td {
+    font-size: 0.82rem;
+    padding: 0.75rem 0.85rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .proposals-table tr:last-child td { border-bottom: none; }
+
+  .proposals-table tbody tr {
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .proposals-table tbody tr:hover { background: var(--surface2); }
+  .proposals-table tbody tr.selected { background: var(--accent-glow); }
+
+  .axis-tag {
+    font-size: 0.65rem;
+    font-weight: 500;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    background: var(--surface2);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .score-cell {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  .nd-tag {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* RADAR CHART */
+  .chart-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .chart-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  canvas { max-width: 100%; }
+
+  /* COMPETENCE BARS */
+  .comp-bars { display: flex; flex-direction: column; gap: 0.6rem; }
+
+  .comp-row {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr 3rem;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .comp-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+
+  .comp-bar-track {
+    height: 8px;
+    background: var(--surface2);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  .comp-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .comp-score {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  /* LINE CHART SECTION */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* PROGRESSO PANEL */
+  .comp-toggle {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  /* PROPOSTAS PANEL */
+  .proposal-detail {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .proposal-title-big {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .proposal-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  /* LOADING / ERROR */
+  .state-msg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    gap: 1rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .spinner {
+    width: 32px; height: 32px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .signature {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    margin-top: 3rem;
+    letter-spacing: 0.05em;
+  }
+
+  .empty-state {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-title">Redação<span>Tracker</span></div>
+    <div class="brand-sub">Acompanhamento de Competências ENEM</div>
+  </div>
+  <div class="header-right">
+    <div class="refresh-info" id="refreshInfo">—</div>
+    <button class="btn-icon" onclick="loadData()" title="Atualizar">↻</button>
+    <button class="btn-icon" onclick="toggleTheme()" title="Tema" id="themeBtn">☀</button>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="tab active" onclick="switchTab('visao-geral')">Visão Geral</div>
+  <div class="tab" onclick="switchTab('aluno')">Aluno</div>
+  <div class="tab" onclick="switchTab('propostas')">Propostas</div>
+  <div class="tab" onclick="switchTab('progresso')">Progresso</div>
+</nav>
+
+<main>
+
+  <!-- VISÃO GERAL -->
+  <div class="panel active" id="panel-visao-geral">
+    <div class="filters">
+      <span class="filter-label">Turma</span>
+      <div class="pill active" onclick="setTurmaFilter('todas', this)">Todas</div>
+      <div class="pill" onclick="setTurmaFilter('3A', this)">3A</div>
+      <div class="pill" onclick="setTurmaFilter('3B', this)">3B</div>
+      <span class="filter-label" style="margin-left:1rem;">Ver por</span>
+      <div class="pill active" onclick="setViewMode('latest', this)" id="vm-latest">Última Proposta</div>
+      <div class="pill" onclick="setViewMode('average', this)" id="vm-average">Média Geral</div>
+    </div>
+    <div id="visao-geral-content"></div>
+  </div>
+
+  <!-- ALUNO -->
+  <div class="panel" id="panel-aluno">
+    <div class="student-selector">
+      <select class="select-styled" id="studentSelect" onchange="renderAluno()">
+        <option value="">Selecione um aluno...</option>
+      </select>
+      <select class="select-styled" id="axisFilterAluno" onchange="renderAluno()">
+        <option value="">Todos os eixos</option>
+      </select>
+    </div>
+    <div id="aluno-content"></div>
+  </div>
+
+  <!-- PROPOSTAS -->
+  <div class="panel" id="panel-propostas">
+    <div class="filters">
+      <span class="filter-label">Eixo</span>
+      <div id="axis-pills-propostas"></div>
+    </div>
+    <div class="student-selector">
+      <select class="select-styled" id="proposalSelect" onchange="renderPropostaDetail()">
+        <option value="">Selecione uma proposta...</option>
+      </select>
+    </div>
+    <div id="propostas-content"></div>
+  </div>
+
+  <!-- PROGRESSO -->
+  <div class="panel" id="panel-progresso">
+    <div class="filters">
+      <span class="filter-label">Turma</span>
+      <div class="pill active" onclick="setProgressoTurma('todas', this)">Todas</div>
+      <div class="pill" onclick="setProgressoTurma('3A', this)">3A</div>
+      <div class="pill" onclick="setProgressoTurma('3B', this)">3B</div>
+      <span class="filter-label" style="margin-left:1rem;">Eixo</span>
+      <select class="select-styled pill" id="axisFilterProgresso" onchange="renderProgresso()" style="min-width:160px;">
+        <option value="">Todos</option>
+      </select>
+    </div>
+    <div id="progresso-content"></div>
+  </div>
+
+</main>
+
+<div class="signature">
+ Created by Fang and Claw · Redação Tracker · 2026
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxfe0s9suVTGLyFl07ZOG1uUYKE1Yt49C5TaK0atTCIqKfA2q5cnn8bRvRf-Br0DG4vng/exec';
+
+let appData = null;
+let turmaFilter = 'todas';
+let viewMode = 'latest';
+let progressoTurma = 'todas';
+let activeTab = 'visao-geral';
+let charts = {};
+
+// ── THRESHOLDS ────────────────────────────────────────────────
+function getCompLevel(score) {
+  if (score === null || score === undefined || score === '') return { level: 'ausente', label: 'N/E', color: 'var(--text-muted)' };
+  score = Number(score);
+  if (score === 200) return { level: 'excelente', label: 'Excelente', color: 'var(--c-green)' };
+  if (score >= 160) return { level: 'bom', label: 'Bom', color: 'var(--c-teal)' };
+  if (score >= 120) return { level: 'mediano', label: 'Mediano', color: 'var(--c-yellow)' };
+  if (score >= 80)  return { level: 'insuficiente', label: 'Insuficiente', color: 'var(--c-orange)' };
+  if (score >= 40)  return { level: 'precario', label: 'Precário', color: 'var(--c-red)' };
+  return { level: 'precario', label: 'Precário', color: 'var(--c-red)' };
+}
+
+function getTotalLevel(score) {
+  if (score === null || score === undefined) return { level: 'ausente', label: 'Sem dados', color: 'var(--text-muted)' };
+  score = Number(score);
+  if (score >= 800) return { level: 'excelente', label: 'Excelente', color: 'var(--c-green)' };
+  if (score >= 600) return { level: 'bom', label: 'Bom', color: 'var(--c-teal)' };
+  if (score >= 400) return { level: 'mediano', label: 'Em Desenvolvimento', color: 'var(--c-yellow)' };
+  return { level: 'precario', label: 'Precário', color: 'var(--c-red)' };
+}
+
+// ── DATA ──────────────────────────────────────────────────────
+async function loadData() {
+  document.getElementById('refreshInfo').textContent = 'Carregando...';
+  try {
+    const res = await fetch(`${SCRIPT_URL}?action=getData`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    appData = data;
+    const now = new Date();
+    document.getElementById('refreshInfo').textContent =
+      `Atualizado ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+    populateSelects();
+    renderActivePanel();
+    scheduleAutoRefresh();
+  } catch(e) {
+    document.getElementById('refreshInfo').textContent = 'Erro ao carregar';
+    showError(e.message);
+  }
+}
+
+function scheduleAutoRefresh() {
+  setTimeout(loadData, 24 * 60 * 60 * 1000);
+}
+
+function populateSelects() {
+  if (!appData) return;
+
+  // Student select
+  const ss = document.getElementById('studentSelect');
+  const cur = ss.value;
+  ss.innerHTML = '<option value="">Selecione um aluno...</option>';
+  [...appData.students].sort((a,b) => a.name.localeCompare(b.name)).forEach(s => {
+    ss.innerHTML += `<option value="${s.id}">${s.name} (${s.id})</option>`;
+  });
+  if (cur) ss.value = cur;
+
+  // Axis selects
+  const axes = [...new Set(appData.proposals.map(p => p.axis).filter(Boolean))].sort();
+
+  ['axisFilterAluno', 'axisFilterProgresso'].forEach(id => {
+    const el = document.getElementById(id);
+    const cv = el.value;
+    el.innerHTML = id === 'axisFilterAluno'
+      ? '<option value="">Todos os eixos</option>'
+      : '<option value="">Todos</option>';
+    axes.forEach(a => el.innerHTML += `<option value="${a}">${a}</option>`);
+    if (cv) el.value = cv;
+  });
+
+  // Axis pills for Propostas
+  const pillsEl = document.getElementById('axis-pills-propostas');
+  pillsEl.innerHTML = `<div class="pill active" onclick="setAxisFilter('', this)">Todos</div>`;
+  axes.forEach(a => {
+    pillsEl.innerHTML += `<div class="pill" onclick="setAxisFilter('${a}', this)">${a}</div>`;
+  });
+
+  // Proposal select
+  const ps = document.getElementById('proposalSelect');
+  const cp = ps.value;
+  ps.innerHTML = '<option value="">Selecione uma proposta...</option>';
+  [...appData.proposals].sort((a,b) => parseDate(b.date) - parseDate(a.date)).forEach(p => {
+    ps.innerHTML += `<option value="${p.id}">${p.theme} — ${p.date}</option>`;
+  });
+  if (cp) ps.value = cp;
+}
+
+function parseDate(str) {
+  if (!str) return 0;
+  const [d, m, y] = str.split('/');
+  return new Date(`${y}-${m}-${d}`).getTime();
+}
+
+// ── HELPERS ───────────────────────────────────────────────────
+function getStudentScores(studentId) {
+  return appData.scores.filter(s => s.student_id === studentId);
+}
+
+function getTotal(score) {
+  const vals = [score.c1, score.c2, score.c3, score.c4, score.c5].map(Number);
+  if (vals.some(isNaN)) return null;
+  return vals.reduce((a,b) => a+b, 0);
+}
+
+function getStudentAvg(studentId) {
+  const scores = getStudentScores(studentId);
+  if (!scores.length) return null;
+  const totals = scores.map(getTotal).filter(t => t !== null);
+  if (!totals.length) return null;
+  return Math.round(totals.reduce((a,b) => a+b, 0) / totals.length);
+}
+
+function getStudentLatest(studentId) {
+  const scores = getStudentScores(studentId);
+  if (!scores.length) return null;
+  const withDates = scores.map(s => {
+    const p = appData.proposals.find(p => p.id === s.proposal_id);
+    return { score: s, date: p ? parseDate(p.date) : 0 };
+  }).sort((a,b) => b.date - a.date);
+  return getTotal(withDates[0].score);
+}
+
+function getTurmaStudents(turma) {
+  if (!appData) return [];
+  if (turma === 'todas') return appData.students;
+  return appData.students.filter(s => s.id.startsWith(turma));
+}
+
+// ── TAB SWITCHING ─────────────────────────────────────────────
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach((el, i) => {
+    el.classList.toggle('active', ['visao-geral','aluno','propostas','progresso'][i] === tab);
+  });
+  document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
+  document.getElementById(`panel-${tab}`).classList.add('active');
+  renderActivePanel();
+}
+
+function renderActivePanel() {
+  if (!appData) return;
+  if (activeTab === 'visao-geral') renderVisaoGeral();
+  if (activeTab === 'aluno') renderAluno();
+  if (activeTab === 'propostas') renderPropostaDetail();
+  if (activeTab === 'progresso') renderProgresso();
+}
+
+// ── VISÃO GERAL ───────────────────────────────────────────────
+function setTurmaFilter(val, el) {
+  turmaFilter = val;
+  document.querySelectorAll('#panel-visao-geral .filters .pill').forEach(p => {
+    if (['Todas','3A','3B'].includes(p.textContent)) p.classList.remove('active');
+  });
+  el.classList.add('active');
+  renderVisaoGeral();
+}
+
+function setViewMode(val, el) {
+  viewMode = val;
+  document.getElementById('vm-latest').classList.toggle('active', val === 'latest');
+  document.getElementById('vm-average').classList.toggle('active', val === 'average');
+  renderVisaoGeral();
+}
+
+function renderVisaoGeral() {
+  if (!appData) return;
+  const students = getTurmaStudents(turmaFilter);
+
+  const scored = students.map(s => {
+    const score = viewMode === 'latest' ? getStudentLatest(s.id) : getStudentAvg(s.id);
+    return { ...s, score, level: getTotalLevel(score) };
+  });
+
+  // Group by level
+  const levels = [
+    { key: 'excelente', label: 'Excelente', range: '800–1000' },
+    { key: 'bom', label: 'Bom', range: '600–799' },
+    { key: 'mediano', label: 'Em Desenvolvimento', range: '400–599' },
+    { key: 'precario', label: 'Precário', range: '0–399' },
+    { key: 'ausente', label: 'Sem Dados', range: '—' },
+  ];
+
+  let html = '';
+  levels.forEach(lv => {
+    const group = scored.filter(s => s.level.level === lv.key);
+    if (!group.length) return;
+    html += `
+      <div class="tier-section">
+        <div class="tier-header">
+          <div class="tier-badge badge-${lv.key}">${lv.label}</div>
+          <div class="tier-count">${lv.range} · ${group.length} aluno${group.length !== 1 ? 's' : ''}</div>
+        </div>
+        <div class="cards-grid">
+    `;
+    group.sort((a,b) => (b.score||0) - (a.score||0)).forEach(s => {
+      html += `
+        <div class="student-card lvl-${lv.key}" onclick="goToAluno('${s.id}')">
+          <div class="card-name">${s.name.split(' ')[0]}<br>${s.name.split(' ').slice(1).join(' ')}</div>
+          <div class="card-id">${s.id}</div>
+          <div class="card-score" style="color:${s.level.color}">${s.score !== null ? s.score : '—'}</div>
+          <div class="card-label">${viewMode === 'latest' ? 'Última proposta' : 'Média geral'}</div>
+        </div>
+      `;
+    });
+    html += `</div></div>`;
+  });
+
+  if (!html) html = '<div class="empty-state">Nenhum dado disponível.</div>';
+  document.getElementById('visao-geral-content').innerHTML = html;
+}
+
+function goToAluno(id) {
+  switchTab('aluno');
+  document.getElementById('studentSelect').value = id;
+  renderAluno();
+}
+
+// ── ALUNO ─────────────────────────────────────────────────────
+let selectedProposalId = null;
+
+function renderAluno() {
+  if (!appData) return;
+  const studentId = document.getElementById('studentSelect').value;
+  const axisFilter = document.getElementById('axisFilterAluno').value;
+  const container = document.getElementById('aluno-content');
+
+  if (!studentId) {
+    container.innerHTML = '<div class="empty-state">Selecione um aluno para ver seus dados.</div>';
+    return;
+  }
+
+  const student = appData.students.find(s => s.id === studentId);
+  let proposals = appData.proposals.filter(p => !axisFilter || p.axis === axisFilter)
+    .sort((a,b) => parseDate(a.date) - parseDate(b.date));
+
+  const scores = getStudentScores(studentId);
+  const avg = getStudentAvg(studentId);
+  const latest = getStudentLatest(studentId);
+  const avgLevel = getTotalLevel(avg);
+  const latestLevel = getTotalLevel(latest);
+
+  // Overview stats
+  let html = `
+    <div class="student-overview">
+      <div class="stat-card">
+        <div class="stat-label">Média Geral</div>
+        <div class="stat-value" style="color:${avgLevel.color}">${avg !== null ? avg : '—'}</div>
+        <div class="axis-tag" style="margin-top:0.5rem">${avgLevel.label}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Última Proposta</div>
+        <div class="stat-value" style="color:${latestLevel.color}">${latest !== null ? latest : '—'}</div>
+        <div class="axis-tag" style="margin-top:0.5rem">${latestLevel.label}</div>
+      </div>
+    </div>
+  `;
+
+  // Proposals table
+  html += `
+    <div class="section-title">Propostas</div>
+    <div class="chart-container" style="padding:0; overflow:hidden; margin-bottom:1rem;">
+    <table class="proposals-table">
+      <thead>
+        <tr>
+          <th>Tema</th>
+          <th>Data</th>
+          <th>Eixo</th>
+          <th>C1</th><th>C2</th><th>C3</th><th>C4</th><th>C5</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  proposals.forEach(p => {
+    const sc = scores.find(s => s.proposal_id === p.id);
+    const isSelected = selectedProposalId === p.id;
+    if (!sc) {
+      html += `<tr onclick="selectProposal('${p.id}', '${studentId}')" class="${isSelected?'selected':''}">
+        <td>${p.theme}</td>
+        <td style="white-space:nowrap">${p.date}</td>
+        <td><span class="axis-tag">${p.axis||'—'}</span></td>
+        <td colspan="6"><span class="nd-tag">Não Entregue</span></td>
+      </tr>`;
+      return;
+    }
+    const total = getTotal(sc);
+    const tl = getTotalLevel(total);
+    html += `<tr onclick="selectProposal('${p.id}', '${studentId}')" class="${isSelected?'selected':''}">
+      <td>${p.theme}</td>
+      <td style="white-space:nowrap">${p.date}</td>
+      <td><span class="axis-tag">${p.axis||'—'}</span></td>
+      ${[sc.c1,sc.c2,sc.c3,sc.c4,sc.c5].map(v => {
+        const cl = getCompLevel(v);
+        return `<td><span class="score-cell" style="color:${cl.color}">${v}</span></td>`;
+      }).join('')}
+      <td><span class="score-cell" style="color:${tl.color}">${total}</span></td>
+    </tr>`;
+  });
+
+  html += `</tbody></table></div>`;
+
+  // Detail for selected proposal
+  if (selectedProposalId) {
+    const p = appData.proposals.find(p => p.id === selectedProposalId);
+    const sc = scores.find(s => s.proposal_id === selectedProposalId);
+    if (p && sc) {
+      const comps = [
+        { key: 'C1', label: 'C1 — Língua Portuguesa', val: sc.c1 },
+        { key: 'C2', label: 'C2 — Tipo Textual', val: sc.c2 },
+        { key: 'C3', label: 'C3 — Seleção de Informações', val: sc.c3 },
+        { key: 'C4', label: 'C4 — Coesão', val: sc.c4 },
+        { key: 'C5', label: 'C5 — Proposta de Intervenção', val: sc.c5 },
+      ];
+      html += `
+        <div class="section-title">Detalhamento — ${p.theme}</div>
+        <div class="chart-container">
+          <div class="comp-bars">
+            ${comps.map(c => {
+              const cl = getCompLevel(c.val);
+              const pct = (Number(c.val)/200*100).toFixed(1);
+              return `
+                <div class="comp-row">
+                  <div class="comp-label">${c.key}</div>
+                  <div>
+                    <div class="comp-bar-track">
+                      <div class="comp-bar-fill" style="width:${pct}%;background:${cl.color}"></div>
+                    </div>
+                    <div style="font-size:0.65rem;color:var(--text-muted);margin-top:0.2rem">${cl.label}</div>
+                  </div>
+                  <div class="comp-score" style="color:${cl.color}">${c.val}</div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  // Progression line chart
+  const proposalsWithScores = proposals.map(p => ({
+    p,
+    sc: scores.find(s => s.proposal_id === p.id)
+  })).filter(x => x.sc);
+
+  if (proposalsWithScores.length > 1) {
+    html += `
+      <div class="section-title">Progressão</div>
+      <div class="chart-container">
+        <canvas id="lineChartAluno" height="200"></canvas>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+
+  if (proposalsWithScores.length > 1) {
+    destroyChart('lineChartAluno');
+    const labels = proposalsWithScores.map(x => x.p.date);
+    const totals = proposalsWithScores.map(x => getTotal(x.sc));
+    const compColors = ['#7c6af7','#22c55e','#14b8a6','#eab308','#f97316'];
+    const compKeys = ['c1','c2','c3','c4','c5'];
+    const compLabels = ['C1','C2','C3','C4','C5'];
+
+    const datasets = [
+      {
+        label: 'Total',
+        data: totals,
+        borderColor: '#7c6af7',
+        backgroundColor: 'rgba(124,106,247,0.1)',
+        borderWidth: 2.5,
+        tension: 0.3,
+        fill: true,
+        yAxisID: 'yTotal',
+      },
+      ...compKeys.map((k,i) => ({
+        label: compLabels[i],
+        data: proposalsWithScores.map(x => Number(x.sc[k])),
+        borderColor: compColors[i],
+        backgroundColor: 'transparent',
+        borderWidth: 1.5,
+        tension: 0.3,
+        borderDash: [4,3],
+        yAxisID: 'yComp',
+        hidden: true,
+      }))
+    ];
+
+    charts['lineChartAluno'] = new Chart(document.getElementById('lineChartAluno'), {
+      type: 'line',
+      data: { labels, datasets },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: {
+            labels: { color: getComputedStyle(document.body).getPropertyValue('--text-muted').trim(), font: { family: 'Syne', size: 11 } }
+          }
+        },
+        scales: {
+          yTotal: { type: 'linear', position: 'left', min: 0, max: 1000, ticks: { color: '#7c6af7', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+          yComp:  { type: 'linear', position: 'right', min: 0, max: 200, ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-muted').trim(), font: { size: 10 } }, grid: { drawOnChartArea: false } },
+          x: { ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-muted').trim(), font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } }
+        }
+      }
+    });
+  }
+}
+
+function selectProposal(proposalId, studentId) {
+  selectedProposalId = selectedProposalId === proposalId ? null : proposalId;
+  renderAluno();
+}
+
+function destroyChart(id) {
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
+// ── PROPOSTAS ─────────────────────────────────────────────────
+let axisPillFilter = '';
+
+function setAxisFilter(val, el) {
+  axisPillFilter = val;
+  document.querySelectorAll('#axis-pills-propostas .pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  populateProposalSelect();
+}
+
+function populateProposalSelect() {
+  const ps = document.getElementById('proposalSelect');
+  const cur = ps.value;
+  ps.innerHTML = '<option value="">Selecione uma proposta...</option>';
+  const filtered = appData.proposals.filter(p => !axisPillFilter || p.axis === axisPillFilter)
+    .sort((a,b) => parseDate(b.date) - parseDate(a.date));
+  filtered.forEach(p => {
+    ps.innerHTML += `<option value="${p.id}">${p.theme} — ${p.date}</option>`;
+  });
+  if (cur && filtered.find(p => p.id === cur)) ps.value = cur;
+  renderPropostaDetail();
+}
+
+function renderPropostaDetail() {
+  if (!appData) return;
+  const proposalId = document.getElementById('proposalSelect').value;
+  const container = document.getElementById('propostas-content');
+
+  if (!proposalId) {
+    container.innerHTML = '<div class="empty-state">Selecione uma proposta para ver os dados da turma.</div>';
+    return;
+  }
+
+  const proposal = appData.proposals.find(p => p.id === proposalId);
+  const scores = appData.scores.filter(s => s.proposal_id === proposalId);
+
+  // Compute class averages per comp
+  const compKeys = ['c1','c2','c3','c4','c5'];
+  const compLabels = ['C1 — Língua Portuguesa','C2 — Tipo Textual','C3 — Seleção de Informações','C4 — Coesão','C5 — Proposta de Intervenção'];
+  const compAvgs = compKeys.map(k => {
+    const vals = scores.map(s => Number(s[k])).filter(v => !isNaN(v));
+    return vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : null;
+  });
+
+  let html = `
+    <div class="proposal-detail">
+      <div class="proposal-title-big">${proposal.theme}</div>
+      <div class="proposal-meta">
+        <span>📅 ${proposal.date}</span>
+        <span class="axis-tag">${proposal.axis||'—'}</span>
+        <span>${scores.length} entrega${scores.length !== 1 ? 's' : ''}</span>
+      </div>
+    </div>
+    <div class="section-title">Média da Turma por Competência</div>
+    <div class="chart-container">
+      <div class="comp-bars">
+        ${compAvgs.map((avg, i) => {
+          const cl = getCompLevel(avg);
+          const pct = avg !== null ? (avg/200*100).toFixed(1) : 0;
+          return `
+            <div class="comp-row">
+              <div class="comp-label">${compKeys[i].toUpperCase()}</div>
+              <div>
+                <div class="comp-bar-track">
+                  <div class="comp-bar-fill" style="width:${pct}%;background:${cl.color}"></div>
+                </div>
+                <div style="font-size:0.65rem;color:var(--text-muted);margin-top:0.2rem">${compLabels[i]}</div>
+              </div>
+              <div class="comp-score" style="color:${cl.color}">${avg !== null ? avg : '—'}</div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+    <div class="section-title">Ranking</div>
+    <div class="chart-container" style="padding:0;overflow:hidden;">
+    <table class="proposals-table">
+      <thead>
+        <tr><th>#</th><th>Aluno</th><th>C1</th><th>C2</th><th>C3</th><th>C4</th><th>C5</th><th>Total</th></tr>
+      </thead>
+      <tbody>
+  `;
+
+  const ranked = appData.students.map(s => {
+    const sc = scores.find(x => x.student_id === s.id);
+    const total = sc ? getTotal(sc) : null;
+    return { ...s, sc, total };
+  }).sort((a,b) => (b.total||0) - (a.total||0));
+
+  ranked.forEach((s, i) => {
+    if (!s.sc) {
+      html += `<tr><td style="color:var(--text-muted)">${i+1}</td><td>${s.name}</td><td colspan="6"><span class="nd-tag">Não Entregue</span></td></tr>`;
+      return;
+    }
+    const tl = getTotalLevel(s.total);
+    html += `<tr>
+      <td style="color:var(--text-muted);font-weight:700">${i+1}</td>
+      <td>${s.name} <span style="color:var(--text-muted);font-size:0.7rem">${s.id}</span></td>
+      ${compKeys.map(k => {
+        const cl = getCompLevel(s.sc[k]);
+        return `<td><span class="score-cell" style="color:${cl.color}">${s.sc[k]}</span></td>`;
+      }).join('')}
+      <td><span class="score-cell" style="color:${tl.color}">${s.total}</span></td>
+    </tr>`;
+  });
+
+  html += `</tbody></table></div>`;
+  container.innerHTML = html;
+}
+
+// ── PROGRESSO ────────────────────────────────────────────────
+function setProgressoTurma(val, el) {
+  progressoTurma = val;
+  document.querySelectorAll('#panel-progresso .filters .pill:not(select)').forEach(p => {
+    if (['Todas','3A','3B'].includes(p.textContent)) p.classList.remove('active');
+  });
+  el.classList.add('active');
+  renderProgresso();
+}
+
+function renderProgresso() {
+  if (!appData) return;
+  const axisFilter = document.getElementById('axisFilterProgresso').value;
+  const container = document.getElementById('progresso-content');
+
+  let proposals = appData.proposals.filter(p => !axisFilter || p.axis === axisFilter)
+    .sort((a,b) => parseDate(a.date) - parseDate(b.date));
+
+  const students = getTurmaStudents(progressoTurma);
+
+  if (proposals.length < 2) {
+    container.innerHTML = '<div class="empty-state">Dados insuficientes para exibir progressão. São necessárias pelo menos 2 propostas.</div>';
+    return;
+  }
+
+  // Compute class average per proposal
+  const labels = proposals.map(p => p.date);
+  const avgTotals = proposals.map(p => {
+    const vals = students.map(s => {
+      const sc = appData.scores.find(x => x.student_id === s.id && x.proposal_id === p.id);
+      return sc ? getTotal(sc) : null;
+    }).filter(v => v !== null);
+    return vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : null;
+  });
+
+  const compKeys = ['c1','c2','c3','c4','c5'];
+  const compColors = ['#7c6af7','#22c55e','#14b8a6','#eab308','#f97316'];
+
+  const compAvgDatasets = compKeys.map((k,i) => ({
+    label: `C${i+1}`,
+    data: proposals.map(p => {
+      const vals = students.map(s => {
+        const sc = appData.scores.find(x => x.student_id === s.id && x.proposal_id === p.id);
+        return sc ? Number(sc[k]) : null;
+      }).filter(v => v !== null);
+      return vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : null;
+    }),
+    borderColor: compColors[i],
+    backgroundColor: 'transparent',
+    borderWidth: 1.5,
+    tension: 0.3,
+    borderDash: [4,3],
+    yAxisID: 'yComp',
+    hidden: true,
+  }));
+
+  container.innerHTML = `
+    <div class="section-title">Média da Turma — Progressão</div>
+    <div class="chart-container">
+      <canvas id="progressoChart" height="220"></canvas>
+    </div>
+  `;
+
+  destroyChart('progressoChart');
+  charts['progressoChart'] = new Chart(document.getElementById('progressoChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Média Total',
+          data: avgTotals,
+          borderColor: '#7c6af7',
+          backgroundColor: 'rgba(124,106,247,0.08)',
+          borderWidth: 2.5,
+          tension: 0.3,
+          fill: true,
+          yAxisID: 'yTotal',
+        },
+        ...compAvgDatasets
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          labels: { color: getComputedStyle(document.body).getPropertyValue('--text-muted').trim(), font: { family: 'Syne', size: 11 } }
+        }
+      },
+      scales: {
+        yTotal: {
+          type: 'linear', position: 'left', min: 0, max: 1000,
+          ticks: { color: '#7c6af7', font: { size: 10 } },
+          grid: { color: 'rgba(255,255,255,0.05)' }
+        },
+        yComp: {
+          type: 'linear', position: 'right', min: 0, max: 200,
+          ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-muted').trim(), font: { size: 10 } },
+          grid: { drawOnChartArea: false }
+        },
+        x: {
+          ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-muted').trim(), font: { size: 10 } },
+          grid: { color: 'rgba(255,255,255,0.05)' }
+        }
+      }
+    }
+  });
+}
+
+// ── THEME ─────────────────────────────────────────────────────
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  document.getElementById('themeBtn').textContent = isLight ? '☾' : '☀';
+  localStorage.setItem('redacaoTheme', isLight ? 'light' : 'dark');
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+function showError(msg) {
+  ['visao-geral-content','aluno-content','propostas-content','progresso-content'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = `<div class="state-msg"><div>⚠ Erro: ${msg}</div></div>`;
+  });
+}
+
+(function init() {
+  const saved = localStorage.getItem('redacaoTheme');
+  if (saved === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('themeBtn').textContent = '☾';
+  }
+
+  ['visao-geral-content','aluno-content','propostas-content','progresso-content'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = `<div class="state-msg"><div class="spinner"></div><div>Carregando dados...</div></div>`;
+  });
+
+  loadData();
+})();
+</script>
+</body>
+</html>
