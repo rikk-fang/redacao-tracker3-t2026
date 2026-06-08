@@ -586,6 +586,9 @@
       <span class="filter-label" style="margin-left:1rem;">Ver por</span>
       <div class="pill active" onclick="setViewMode('latest', this)" id="vm-latest">Última Proposta</div>
       <div class="pill" onclick="setViewMode('average', this)" id="vm-average">Média Geral</div>
+      <span class="filter-label" style="margin-left:1rem;">Exibir</span>
+<div class="pill active" onclick="setShowAll(false, this)" id="sa-graded">Com notas</div>
+<div class="pill" onclick="setShowAll(true, this)" id="sa-all">Todos</div>
     </div>
     <div id="visao-geral-content"></div>
   </div>
@@ -650,6 +653,7 @@ let viewMode = 'latest';
 let progressoTurma = 'todas';
 let activeTab = 'visao-geral';
 let charts = {};
+let showAllStudents = false;
 
 // ── THRESHOLDS ────────────────────────────────────────────────
 function getCompLevel(score) {
@@ -814,10 +818,18 @@ function setViewMode(val, el) {
   document.getElementById('vm-average').classList.toggle('active', val === 'average');
   renderVisaoGeral();
 }
-
+function setShowAll(val, el) {
+  showAllStudents = val;
+  document.getElementById('sa-graded').classList.toggle('active', !val);
+  document.getElementById('sa-all').classList.toggle('active', val);
+  renderVisaoGeral();
+}
 function renderVisaoGeral() {
   if (!appData) return;
-  const students = getTurmaStudents(turmaFilter);
+const allStudents = getTurmaStudents(turmaFilter);
+const students = showAllStudents
+  ? allStudents
+  : allStudents.filter(s => appData.scores.some(sc => sc.student_id === s.id));
 
   const scored = students.map(s => {
     const score = viewMode === 'latest' ? getStudentLatest(s.id) : getStudentAvg(s.id);
