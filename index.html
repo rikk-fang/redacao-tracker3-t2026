@@ -617,6 +617,66 @@
       padding: 1rem;
     }
   }
+
+/* PARAMETROS INTERNAL TABS */
+  .param-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .param-tab {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .param-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .param-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .param-panel { display: none; }
+  .param-panel.active { display: block; }
+
+  /* EIXOS GRID */
+  .eixos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .eixo-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text);
+    transition: all 0.2s;
+  }
+
+  .eixo-card.used {
+    border-color: rgba(124,106,247,0.4);
+    background: var(--accent-glow);
+    color: var(--accent);
+  }
+
+  .eixo-tag {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.35rem;
+  }
+  
 </style>
 </head>
 <body>
@@ -704,6 +764,12 @@
 <!-- PARÂMETROS -->
   <div class="panel" id="panel-parametros">
 
+    <div class="param-tabs">
+      <div class="param-tab active" onclick="switchParamTab('competencias', this)">Competências</div>
+      <div class="param-tab" onclick="switchParamTab('eixos', this)">Eixos</div>
+    </div>
+
+    <div class="param-panel active" id="param-competencias">
     <div class="section-title">Competências ENEM</div>
 
     <!-- C1 -->
@@ -776,7 +842,15 @@
       </div>
     </div>
 
-  </div>
+</div><!-- end param-competencias -->
+
+    <div class="param-panel" id="param-eixos">
+      <div class="section-title">Eixos Temáticos</div>
+      <div class="eixos-grid" id="eixos-grid"></div>
+    </div><!-- end param-eixos -->
+
+  </div><!-- end panel-parametros -->
+
 </main>
 
 <div class="signature">
@@ -935,7 +1009,49 @@ function switchTab(tab) {
   document.getElementById(`panel-${tab}`).classList.add('active');
   renderActivePanel();
 }
+function switchParamTab(tab, el) {
+  document.querySelectorAll('.param-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.param-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(`param-${tab}`).classList.add('active');
 
+  if (tab === 'eixos') renderEixos();
+}
+
+function renderEixos() {
+  const allEixos = [
+    'Justiça social',
+    'Dignidade humana',
+    'Liberdade',
+    'Democracia',
+    'Responsabilidade social',
+    'Sustentabilidade',
+    'Bem-estar coletivo',
+    'Igualdade',
+    'Inclusão social',
+    'Direitos humanos',
+    'Conhecimento científico',
+    'Ética',
+    'Desenvolvimento humano',
+    'Coesão social',
+    'Responsabilidade intergeracional'
+  ];
+
+  const usedAxes = appData
+    ? [...new Set(appData.proposals.map(p => p.axis).filter(Boolean))]
+    : [];
+
+  const grid = document.getElementById('eixos-grid');
+  grid.innerHTML = allEixos.map(e => {
+    const used = usedAxes.includes(e);
+    return `
+      <div class="eixo-card ${used ? 'used' : ''}">
+        ${e}
+        <div class="eixo-tag">${used ? 'Com propostas' : 'Sem propostas'}</div>
+      </div>
+    `;
+  }).join('');
+}
 function renderActivePanel() {
   if (!appData) return;
   if (activeTab === 'visao-geral') renderVisaoGeral();
