@@ -551,6 +551,72 @@
     border: 1px solid var(--border);
     border-radius: 12px;
   }
+
+  /* AXIS PILLS FIX */
+  #axis-pills-propostas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* MOBILE */
+  @media (max-width: 640px) {
+    header {
+      padding: 0.75rem 1rem;
+    }
+
+    .brand-sub {
+      display: none;
+    }
+
+    .refresh-info {
+      display: none;
+    }
+
+    .tabs {
+      padding: 0 0.5rem;
+    }
+
+    .tab {
+      padding: 0.75rem 0.85rem;
+      font-size: 0.72rem;
+    }
+
+    main {
+      padding: 1rem;
+    }
+
+    .filters {
+      gap: 0.4rem;
+    }
+
+    select.select-styled {
+      min-width: unset;
+      width: 100%;
+    }
+
+    .student-selector {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .cards-grid {
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    }
+
+    .proposal-detail {
+      padding: 1rem;
+    }
+
+    .proposals-table th.col-comp,
+    .proposals-table td.col-comp {
+      display: none;
+    }
+
+    .chart-container {
+      padding: 1rem;
+    }
+  }
 </style>
 </head>
 <body>
@@ -1006,7 +1072,7 @@ function renderAluno() {
           <th>Tema</th>
           <th>Data</th>
           <th>Eixo</th>
-          <th>C1</th><th>C2</th><th>C3</th><th>C4</th><th>C5</th>
+          <th class="col-comp">C1</th><th class="col-comp">C2</th><th class="col-comp">C3</th><th class="col-comp">C4</th><th class="col-comp">C5</th>
           <th>Total</th>
         </tr>
       </thead>
@@ -1031,9 +1097,9 @@ function renderAluno() {
       <td>${p.theme}</td>
       <td style="white-space:nowrap">${p.date}</td>
       <td><span class="axis-tag">${p.axis||'—'}</span></td>
-      ${[sc.c1,sc.c2,sc.c3,sc.c4,sc.c5].map(v => {
+${[sc.c1,sc.c2,sc.c3,sc.c4,sc.c5].map(v => {
         const cl = getCompLevel(v);
-        return `<td><span class="score-cell" style="color:${cl.color}">${v}</span></td>`;
+        return `<td class="col-comp"><span class="score-cell" style="color:${cl.color}">${v}</span></td>`;
       }).join('')}
       <td><span class="score-cell" style="color:${tl.color}">${total}</span></td>
     </tr>`;
@@ -1235,8 +1301,8 @@ function renderPropostaDetail() {
     <div class="section-title">Ranking</div>
     <div class="chart-container" style="padding:0;overflow:hidden;">
     <table class="proposals-table">
-      <thead>
-        <tr><th>#</th><th>Aluno</th><th>C1</th><th>C2</th><th>C3</th><th>C4</th><th>C5</th><th>Total</th></tr>
+     <thead>
+        <tr><th>#</th><th>Aluno</th><th class="col-comp">C1</th><th class="col-comp">C2</th><th class="col-comp">C3</th><th class="col-comp">C4</th><th class="col-comp">C5</th><th>Total</th></tr>
       </thead>
       <tbody>
   `;
@@ -1256,9 +1322,9 @@ function renderPropostaDetail() {
     html += `<tr>
       <td style="color:var(--text-muted);font-weight:700">${i+1}</td>
       <td>${s.name} <span style="color:var(--text-muted);font-size:0.7rem">${s.id}</span></td>
-      ${compKeys.map(k => {
+     ${compKeys.map(k => {
         const cl = getCompLevel(s.sc[k]);
-        return `<td><span class="score-cell" style="color:${cl.color}">${s.sc[k]}</span></td>`;
+        return `<td class="col-comp"><span class="score-cell" style="color:${cl.color}">${s.sc[k]}</span></td>`;
       }).join('')}
       <td><span class="score-cell" style="color:${tl.color}">${s.total}</span></td>
     </tr>`;
