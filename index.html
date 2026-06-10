@@ -676,7 +676,23 @@
     letter-spacing: 0.05em;
     margin-top: 0.35rem;
   }
-  
+  .btn-drive {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    background: var(--accent-glow);
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .btn-drive:hover { background: var(--accent); color: #fff; }
 </style>
 </head>
 <body>
@@ -739,13 +755,12 @@
       <span class="filter-label">Eixo</span>
       <div id="axis-pills-propostas"></div>
     </div>
-    <div class="student-selector">
+<div class="student-selector">
       <select class="select-styled" id="proposalSelect" onchange="renderPropostaDetail()">
         <option value="">Selecione uma proposta...</option>
       </select>
+      <div id="drive-btn-slot"></div>
     </div>
-    <div id="propostas-content"></div>
-  </div>
 
   <!-- PROGRESSO -->
   <div class="panel" id="panel-progresso">
@@ -1368,12 +1383,17 @@ function renderPropostaDetail() {
   const proposalId = document.getElementById('proposalSelect').value;
   const container = document.getElementById('propostas-content');
 
-  if (!proposalId) {
+if (!proposalId) {
     container.innerHTML = '<div class="empty-state">Selecione uma proposta para ver os dados da turma.</div>';
     return;
   }
 
   const proposal = appData.proposals.find(p => p.id === proposalId);
+  const driveBtn = proposal && proposal.drive_url
+    ? `<a href="${proposal.drive_url}" target="_blank" rel="noopener" class="btn-drive">📄 Abrir no Drive</a>`
+    : '';
+  document.getElementById('drive-btn-slot').innerHTML = driveBtn;
+
   const scores = appData.scores.filter(s => s.proposal_id === proposalId);
 
   // Compute class averages per comp
