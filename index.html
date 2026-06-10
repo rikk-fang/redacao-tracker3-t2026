@@ -572,6 +572,7 @@
   <div class="tab" onclick="switchTab('aluno')">Aluno</div>
   <div class="tab" onclick="switchTab('propostas')">Propostas</div>
   <div class="tab" onclick="switchTab('progresso')">Progresso</div>
+  <div class="tab" onclick="switchTab('parametros')">Parâmetros</div>
 </nav>
 
 <main>
@@ -634,7 +635,82 @@
     </div>
     <div id="progresso-content"></div>
   </div>
+<!-- PARÂMETROS -->
+  <div class="panel" id="panel-parametros">
 
+    <div class="section-title">Competências ENEM</div>
+
+    <!-- C1 -->
+    <div class="proposal-detail" style="margin-bottom:1rem;">
+      <div class="proposal-title-big">C1 — Língua Portuguesa</div>
+      <div class="proposal-meta" style="margin-top:0.5rem;">Domínio da modalidade escrita formal da língua portuguesa</div>
+      <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem;">
+        <div class="comp-row"><div class="tier-badge badge-excelente">200</div><div style="font-size:0.8rem;color:var(--text)">Demonstra excelente domínio da modalidade escrita formal da língua portuguesa e de escolha de registro. Desvios gramaticais ou de convenções da escrita serão aceitos somente como excepcionalidade e quando não caracterizarem reincidência.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-bom">160</div><div style="font-size:0.8rem;color:var(--text)">Demonstra bom domínio da modalidade escrita formal da língua portuguesa e de escolha de registro, com poucos desvios gramaticais e de convenções da escrita.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-mediano">120</div><div style="font-size:0.8rem;color:var(--text)">Demonstra domínio mediano da modalidade escrita formal da língua portuguesa e de escolha de registro, com alguns desvios gramaticais e de convenções da escrita.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-insuficiente">80</div><div style="font-size:0.8rem;color:var(--text)">Demonstra domínio insuficiente da modalidade escrita formal da língua portuguesa, com muitos desvios gramaticais, de escolha de registro e de convenções da escrita.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-precario">40</div><div style="font-size:0.8rem;color:var(--text)">Demonstra domínio precário da modalidade escrita formal da língua portuguesa, de forma sistemática, com diversificados e frequentes desvios gramaticais, de escolha de registro e de convenções da escrita.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-ausente">0</div><div style="font-size:0.8rem;color:var(--text)">Demonstra desconhecimento da modalidade escrita formal da língua portuguesa.</div></div>
+      </div>
+    </div>
+
+    <!-- C2 -->
+    <div class="proposal-detail" style="margin-bottom:1rem;">
+      <div class="proposal-title-big">C2 — Tipo Textual</div>
+      <div class="proposal-meta" style="margin-top:0.5rem;">Compreensão da proposta e aplicação de conceitos da dissertação-argumentativa</div>
+      <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem;">
+        <div class="comp-row"><div class="tier-badge badge-excelente">200</div><div style="font-size:0.8rem;color:var(--text)">Desenvolve o tema por meio de argumentação consistente, a partir de um repertório sociocultural produtivo, e apresenta excelente domínio do texto dissertativo-argumentativo.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-bom">160</div><div style="font-size:0.8rem;color:var(--text)">Desenvolve o tema por meio de argumentação consistente e apresenta bom domínio do texto dissertativo-argumentativo, com proposição, argumentação e conclusão.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-mediano">120</div><div style="font-size:0.8rem;color:var(--text)">Desenvolve o tema por meio de argumentação previsível e apresenta domínio mediano do texto dissertativo-argumentativo, com proposição, argumentação e conclusão.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-insuficiente">80</div><div style="font-size:0.8rem;color:var(--text)">Desenvolve o tema recorrendo à cópia de trechos dos textos motivadores ou apresenta domínio insuficiente do texto dissertativo-argumentativo, não atendendo à estrutura com proposição, argumentação e conclusão.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-precario">40</div><div style="font-size:0.8rem;color:var(--text)">Apresenta o assunto, tangenciando o tema, ou demonstra domínio precário do texto dissertativo-argumentativo, com traços constantes de outros tipos textuais.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-ausente">0</div><div style="font-size:0.8rem;color:var(--text)">Fuga ao tema / não atendimento à estrutura dissertativo-argumentativa. Nestes casos a redação recebe nota 0 (zero) e é anulada.</div></div>
+      </div>
+    </div>
+
+    <!-- C3 -->
+    <div class="proposal-detail" style="margin-bottom:1rem;">
+      <div class="proposal-title-big">C3 — Seleção de Informações</div>
+      <div class="proposal-meta" style="margin-top:0.5rem;">Seleção, relação e organização de argumentos em defesa de um ponto de vista</div>
+      <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem;">
+        <div class="comp-row"><div class="tier-badge badge-excelente">200</div><div style="font-size:0.8rem;color:var(--text)">Apresenta informações, fatos e opiniões relacionados ao tema proposto, de forma consistente e organizada, configurando autoria, em defesa de um ponto de vista.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-bom">160</div><div style="font-size:0.8rem;color:var(--text)">Apresenta informações, fatos e opiniões relacionados ao tema, de forma organizada, com indícios de autoria, em defesa de um ponto de vista.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-mediano">120</div><div style="font-size:0.8rem;color:var(--text)">Apresenta informações, fatos e opiniões relacionados ao tema, limitados aos argumentos dos textos motivadores e pouco organizados, em defesa de um ponto de vista.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-insuficiente">80</div><div style="font-size:0.8rem;color:var(--text)">Apresenta informações, fatos e opiniões relacionados ao tema, mas desorganizados ou contraditórios e limitados aos argumentos dos textos motivadores, em defesa de um ponto de vista.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-precario">40</div><div style="font-size:0.8rem;color:var(--text)">Apresenta informações, fatos e opiniões pouco relacionados ao tema ou incoerentes e sem defesa de um ponto de vista.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-ausente">0</div><div style="font-size:0.8rem;color:var(--text)">Apresenta informações, fatos e opiniões não relacionados ao tema e sem defesa de um ponto de vista.</div></div>
+      </div>
+    </div>
+
+    <!-- C4 -->
+    <div class="proposal-detail" style="margin-bottom:1rem;">
+      <div class="proposal-title-big">C4 — Coesão</div>
+      <div class="proposal-meta" style="margin-top:0.5rem;">Conhecimento dos mecanismos linguísticos de coesão textual</div>
+      <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem;">
+        <div class="comp-row"><div class="tier-badge badge-excelente">200</div><div style="font-size:0.8rem;color:var(--text)">Articula bem as partes do texto e apresenta repertório diversificado de recursos coesivos.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-bom">160</div><div style="font-size:0.8rem;color:var(--text)">Articula as partes do texto, com poucas inadequações, e apresenta repertório diversificado de recursos coesivos.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-mediano">120</div><div style="font-size:0.8rem;color:var(--text)">Articula as partes do texto, de forma mediana, com inadequações, e apresenta repertório pouco diversificado de recursos coesivos.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-insuficiente">80</div><div style="font-size:0.8rem;color:var(--text)">Articula as partes do texto, de forma insuficiente, com muitas inadequações, e apresenta repertório limitado de recursos coesivos.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-precario">40</div><div style="font-size:0.8rem;color:var(--text)">Articula as partes do texto de forma precária.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-ausente">0</div><div style="font-size:0.8rem;color:var(--text)">Não articula as informações.</div></div>
+      </div>
+    </div>
+
+    <!-- C5 -->
+    <div class="proposal-detail" style="margin-bottom:1rem;">
+      <div class="proposal-title-big">C5 — Proposta de Intervenção</div>
+      <div class="proposal-meta" style="margin-top:0.5rem;">Elaboração de proposta de intervenção social, respeitando os direitos humanos</div>
+      <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem;">
+        <div class="comp-row"><div class="tier-badge badge-excelente">200</div><div style="font-size:0.8rem;color:var(--text)">Elabora muito bem proposta de intervenção, detalhada, relacionada ao tema e articulada à discussão desenvolvida no texto.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-bom">160</div><div style="font-size:0.8rem;color:var(--text)">Elabora bem proposta de intervenção relacionada ao tema e articulada à discussão desenvolvida no texto.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-mediano">120</div><div style="font-size:0.8rem;color:var(--text)">Elabora, de forma mediana, proposta de intervenção relacionada ao tema e articulada à discussão desenvolvida no texto.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-insuficiente">80</div><div style="font-size:0.8rem;color:var(--text)">Elabora, de forma insuficiente, proposta de intervenção relacionada ao tema, ou não articulada com a discussão desenvolvida no texto.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-precario">40</div><div style="font-size:0.8rem;color:var(--text)">Apresenta proposta de intervenção vaga, precária ou relacionada apenas ao assunto.</div></div>
+        <div class="comp-row"><div class="tier-badge badge-ausente">0</div><div style="font-size:0.8rem;color:var(--text)">Não apresenta proposta de intervenção ou apresenta proposta não relacionada ao tema ou ao assunto.</div></div>
+      </div>
+    </div>
+
+  </div>
 </main>
 
 <div class="signature">
@@ -787,7 +863,7 @@ function getTurmaStudents(turma) {
 function switchTab(tab) {
   activeTab = tab;
   document.querySelectorAll('.tab').forEach((el, i) => {
-    el.classList.toggle('active', ['visao-geral','aluno','propostas','progresso'][i] === tab);
+    el.classList.toggle('active', ['visao-geral','aluno','propostas','progresso','parametros'][i] === tab);
   });
   document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
   document.getElementById(`panel-${tab}`).classList.add('active');
