@@ -692,7 +692,56 @@
     align-items: center;
     gap: 0.4rem;
   }
-  .btn-drive:hover { background: var(--accent); color: #fff; }
+.btn-drive:hover { background: var(--accent); color: #fff; }
+
+  /* REPERTÓRIO */
+  .repertorio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .repertorio-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .repertorio-titulo {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .repertorio-nota {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .tipo-tag {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    display: inline-block;
+    width: fit-content;
+    border: 1px solid var(--border);
+  }
+
+  .tipo-livro { background: var(--c-teal-bg); color: var(--c-teal); border-color: rgba(20,184,166,0.3); }
+  .tipo-filme { background: var(--c-yellow-bg); color: var(--c-yellow); border-color: rgba(234,179,8,0.3); }
+  .tipo-documentario { background: var(--c-green-bg); color: var(--c-green); border-color: rgba(34,197,94,0.3); }
+  .tipo-dado { background: var(--accent-glow); color: var(--accent); border-color: rgba(124,106,247,0.3); }
+  .tipo-noticia { background: var(--c-orange-bg); color: var(--c-orange); border-color: rgba(249,115,22,0.3); }
+  .tipo-filosofia { background: var(--c-red-bg); color: var(--c-red); border-color: rgba(239,68,68,0.3); }
+  .tipo-quadro { background: var(--c-gray-bg); color: var(--text-muted); border-color: var(--border); }
+</style>
 </style>
 </head>
 <body>
@@ -715,6 +764,7 @@
   <div class="tab" onclick="switchTab('propostas')">Propostas</div>
   <div class="tab" onclick="switchTab('progresso')">Progresso</div>
   <div class="tab" onclick="switchTab('parametros')">Parâmetros</div>
+  <div class="tab" onclick="switchTab('repertorio')">Repertório</div>
 </nav>
 
 <main>
@@ -870,6 +920,15 @@
 
   </div><!-- end panel-parametros -->
 
+  <!-- REPERTÓRIO -->
+  <div class="panel" id="panel-repertorio">
+    <div class="filters">
+      <span class="filter-label">Eixo</span>
+      <div id="axis-pills-repertorio"></div>
+    </div>
+    <div id="repertorio-content"></div>
+  </div>
+  
 </main>
 
 <div class="signature">
@@ -880,7 +939,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJYG_ZfBAT-jfb3V7l0bwQPbWNr3LR6qhe6K-N37ajZeSW0xHFn0Zv-C8tMBRWa0VvXw/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzOqh9ZqMWl5Ysrdfo7yKuXvzb6INmfCUG_2RDdGz2Y-oK_gNuOnPq_0LS9r9rtPiiuLg/exec';
 
 let appData = null;
 let turmaFilter = 'todas';
@@ -967,7 +1026,7 @@ function populateSelects() {
     pillsEl.innerHTML += `<div class="pill" onclick="setAxisFilter('${a}', this)">${a}</div>`;
   });
 
-  // Proposal select
+// Proposal select
   const ps = document.getElementById('proposalSelect');
   const cp = ps.value;
   ps.innerHTML = '<option value="">Selecione uma proposta...</option>';
@@ -975,6 +1034,8 @@ function populateSelects() {
     ps.innerHTML += `<option value="${p.id}">${p.theme} — ${p.date}</option>`;
   });
   if (cp) ps.value = cp;
+
+  populateRepertorioPills();
 }
 
 function parseDate(str) {
@@ -1022,7 +1083,7 @@ function getTurmaStudents(turma) {
 function switchTab(tab) {
   activeTab = tab;
   document.querySelectorAll('.tab').forEach((el, i) => {
-    el.classList.toggle('active', ['visao-geral','aluno','propostas','progresso','parametros'][i] === tab);
+    el.classList.toggle('active', ['visao-geral','aluno','propostas','progresso','parametros','repertorio'][i] === tab);
   });
   document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
   document.getElementById(`panel-${tab}`).classList.add('active');
@@ -1071,14 +1132,76 @@ function renderEixos() {
     `;
   }).join('');
 }
+
+// ── REPERTÓRIO ──────────────────────────────────────────────
+let repertorioAxisFilter = '';
+
+function tipoToClass(tipo) {
+  const map = {
+    'Livro': 'tipo-livro',
+    'Filme/Série': 'tipo-filme',
+    'Documentário': 'tipo-documentario',
+    'Dado/Estatística': 'tipo-dado',
+    'Notícia': 'tipo-noticia',
+    'Filosofia/Sociologia': 'tipo-filosofia',
+  };
+  return map[tipo] || 'tipo-quadro';
+}
+
+function setRepertorioAxisFilter(val, el) {
+  repertorioAxisFilter = val;
+  document.querySelectorAll('#axis-pills-repertorio .pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderRepertorio();
+}
+
+function populateRepertorioPills() {
+  if (!appData || !appData.repertorio) return;
+  const allAxes = new Set();
+  appData.repertorio.forEach(r => (r.eixos || []).forEach(e => allAxes.add(e)));
+  const sorted = [...allAxes].sort();
+
+  const pillsEl = document.getElementById('axis-pills-repertorio');
+  pillsEl.innerHTML = `<div class="pill active" onclick="setRepertorioAxisFilter('', this)">Todos</div>`;
+  sorted.forEach(a => {
+    pillsEl.innerHTML += `<div class="pill" onclick="setRepertorioAxisFilter('${a}', this)">${a}</div>`;
+  });
+}
+
+function renderRepertorio() {
+  if (!appData) return;
+  const container = document.getElementById('repertorio-content');
+  const items = (appData.repertorio || []).filter(r =>
+    !repertorioAxisFilter || (r.eixos || []).includes(repertorioAxisFilter)
+  );
+
+  if (!items.length) {
+    container.innerHTML = '<div class="empty-state">Nenhuma sugestão de repertório encontrada.</div>';
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="repertorio-grid">
+      ${items.map(r => `
+        <div class="repertorio-card">
+          <div class="tipo-tag ${tipoToClass(r.tipo)}">${r.tipo || '—'}</div>
+          <div class="repertorio-titulo">${r.titulo}</div>
+          ${r.nota ? `<div class="repertorio-nota">${r.nota}</div>` : ''}
+          ${r.link ? `<a href="${r.link}" target="_blank" rel="noopener" class="btn-drive" style="align-self:flex-start;">🔗 Acessar</a>` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
 function renderActivePanel() {
   if (!appData) return;
   if (activeTab === 'visao-geral') renderVisaoGeral();
   if (activeTab === 'aluno') renderAluno();
   if (activeTab === 'propostas') renderPropostaDetail();
   if (activeTab === 'progresso') renderProgresso();
+  if (activeTab === 'repertorio') renderRepertorio();
 }
-
 // ── VISÃO GERAL ───────────────────────────────────────────────
 function setTurmaFilter(val, el) {
   turmaFilter = val;
@@ -1254,7 +1377,7 @@ ${[sc.c1,sc.c2,sc.c3,sc.c4,sc.c5].map(v => {
         { key: 'C4', label: 'C4 — Coesão', val: sc.c4 },
         { key: 'C5', label: 'C5 — Proposta de Intervenção', val: sc.c5 },
       ];
-      html += `
+     html += `
         <div class="section-title">Detalhamento — ${p.theme}</div>
         <div class="chart-container">
           <div class="comp-bars">
@@ -1277,9 +1400,16 @@ ${[sc.c1,sc.c2,sc.c3,sc.c4,sc.c5].map(v => {
           </div>
         </div>
       `;
+      if (sc.comentario) {
+        html += `
+          <div class="chart-container">
+            <div class="chart-title">Comentário do professor</div>
+            <div style="font-size:0.85rem;color:var(--text);line-height:1.5;">${sc.comentario}</div>
+          </div>
+        `;
+      }
     }
   }
-
   // Progression line chart
   const proposalsWithScores = proposals.map(p => ({
     p,
