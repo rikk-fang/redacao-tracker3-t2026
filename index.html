@@ -742,6 +742,7 @@
   .tipo-noticia { background: var(--c-orange-bg); color: var(--c-orange); border-color: rgba(249,115,22,0.3); }
   .tipo-filosofia { background: var(--c-red-bg); color: var(--c-red); border-color: rgba(239,68,68,0.3); }
   .tipo-quadro { background: var(--c-gray-bg); color: var(--text-muted); border-color: var(--border); }
+  .tipo-slide { background: rgba(127,29,29,0.15); color: #b45252; border-color: rgba(127,29,29,0.4); }
 </style>
 </style>
 </head>
@@ -1145,6 +1146,7 @@ function tipoToClass(tipo) {
     'Dado/Estatística': 'tipo-dado',
     'Notícia': 'tipo-noticia',
     'Filosofia/Sociologia': 'tipo-filosofia',
+    'Material da Aula': 'tipo-slide',
   };
   return map[tipo] || 'tipo-quadro';
 }
