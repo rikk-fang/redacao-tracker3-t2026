@@ -554,7 +554,8 @@
 
 /* AXIS PILLS FIX */
   #axis-pills-propostas,
-  #axis-pills-repertorio {
+  #axis-pills-repertorio,
+  #tipo-pills-repertorio {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -928,6 +929,10 @@
       <span class="filter-label">Eixo</span>
       <div id="axis-pills-repertorio"></div>
     </div>
+    <div class="filters">
+      <span class="filter-label">Categoria</span>
+      <div id="tipo-pills-repertorio"></div>
+    </div>
     <div id="repertorio-content"></div>
   </div>
   
@@ -1137,6 +1142,7 @@ function renderEixos() {
 
 // ── REPERTÓRIO ──────────────────────────────────────────────
 let repertorioAxisFilter = '';
+let repertorioTipoFilter = '';
 
 function tipoToClass(tipo) {
   const map = {
@@ -1158,16 +1164,34 @@ function setRepertorioAxisFilter(val, el) {
   renderRepertorio();
 }
 
+function setRepertorioTipoFilter(val, el) {
+  repertorioTipoFilter = val;
+  document.querySelectorAll('#tipo-pills-repertorio .pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderRepertorio();
+}
+
 function populateRepertorioPills() {
   if (!appData || !appData.repertorio) return;
   const allAxes = new Set();
-  appData.repertorio.forEach(r => (r.eixos || []).forEach(e => allAxes.add(e)));
-  const sorted = [...allAxes].sort();
+  const allTipos = new Set();
+  appData.repertorio.forEach(r => {
+    (r.eixos || []).forEach(e => allAxes.add(e));
+    if (r.tipo) allTipos.add(r.tipo);
+  });
+  const sortedAxes = [...allAxes].sort();
+  const sortedTipos = [...allTipos].sort();
 
   const pillsEl = document.getElementById('axis-pills-repertorio');
   pillsEl.innerHTML = `<div class="pill active" onclick="setRepertorioAxisFilter('', this)">Todos</div>`;
-  sorted.forEach(a => {
+  sortedAxes.forEach(a => {
     pillsEl.innerHTML += `<div class="pill" onclick="setRepertorioAxisFilter('${a}', this)">${a}</div>`;
+  });
+
+  const tipoPillsEl = document.getElementById('tipo-pills-repertorio');
+  tipoPillsEl.innerHTML = `<div class="pill active" onclick="setRepertorioTipoFilter('', this)">Todos</div>`;
+  sortedTipos.forEach(t => {
+    tipoPillsEl.innerHTML += `<div class="pill" onclick="setRepertorioTipoFilter('${t}', this)">${t}</div>`;
   });
 }
 
@@ -1175,7 +1199,8 @@ function renderRepertorio() {
   if (!appData) return;
   const container = document.getElementById('repertorio-content');
   const items = (appData.repertorio || []).filter(r =>
-    !repertorioAxisFilter || (r.eixos || []).includes(repertorioAxisFilter)
+    (!repertorioAxisFilter || (r.eixos || []).includes(repertorioAxisFilter)) &&
+    (!repertorioTipoFilter || r.tipo === repertorioTipoFilter)
   );
 
   if (!items.length) {
