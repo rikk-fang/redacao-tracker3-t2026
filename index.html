@@ -744,6 +744,7 @@
   .tipo-filosofia { background: var(--c-red-bg); color: var(--c-red); border-color: rgba(239,68,68,0.3); }
   .tipo-quadro { background: var(--c-gray-bg); color: var(--text-muted); border-color: var(--border); }
   .tipo-slide { background: rgba(127,29,29,0.15); color: #b45252; border-color: rgba(127,29,29,0.4); }
+  .tipo-podcast { background: rgba(30,215,96,0.15); color: #1ed760; border-color: rgba(30,215,96,0.4); }
 </style>
 </style>
 </head>
@@ -1153,6 +1154,7 @@ function tipoToClass(tipo) {
     'Notícia': 'tipo-noticia',
     'Filosofia/Sociologia': 'tipo-filosofia',
     'Material da Aula': 'tipo-slide',
+    'Podcast': 'tipo-podcast',
   };
   return map[tipo] || 'tipo-quadro';
 }
