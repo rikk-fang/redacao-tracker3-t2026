@@ -746,7 +746,7 @@
   .tipo-slide { background: rgba(127,29,29,0.15); color: #b45252; border-color: rgba(127,29,29,0.4); }
   .tipo-podcast { background: rgba(30,215,96,0.15); color: #1ed760; border-color: rgba(30,215,96,0.4); }
 </style>
-</style>
+
 </head>
 <body>
 
@@ -947,7 +947,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzOqh9ZqMWl5Ysrdfo7yKuXvzb6INmfCUG_2RDdGz2Y-oK_gNuOnPq_0LS9r9rtPiiuLg/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzGgRMaea1UXw9TwEGaZRWV0LDO99Ul-7lK-xaNIbde1RoonQUN8DFmkJ9pGVpAo8m2pA/exec';
 
 let appData = null;
 let turmaFilter = 'todas';
@@ -1430,11 +1430,35 @@ ${[sc.c1,sc.c2,sc.c3,sc.c4,sc.c5].map(v => {
           </div>
         </div>
       `;
-      if (sc.comentario) {
+if (sc.comentario) {
         html += `
           <div class="chart-container">
             <div class="chart-title">Comentário do professor</div>
             <div style="font-size:0.85rem;color:var(--text);line-height:1.5;">${sc.comentario}</div>
+          </div>
+        `;
+      }
+
+      const compComments = [
+        { key: 'C1', val: sc.comentario_c1 },
+        { key: 'C2', val: sc.comentario_c2 },
+        { key: 'C3', val: sc.comentario_c3 },
+        { key: 'C4', val: sc.comentario_c4 },
+        { key: 'C5', val: sc.comentario_c5 },
+      ].filter(c => c.val);
+
+      if (compComments.length) {
+        html += `
+          <div class="chart-container">
+            <div class="chart-title">Comentários por Competência</div>
+            <div style="display:flex;flex-direction:column;gap:0.75rem;">
+              ${compComments.map(c => `
+                <div>
+                  <div class="comp-label" style="margin-bottom:0.25rem;">${c.key}</div>
+                  <div style="font-size:0.85rem;color:var(--text);line-height:1.5;">${c.val}</div>
+                </div>
+              `).join('')}
+            </div>
           </div>
         `;
       }
