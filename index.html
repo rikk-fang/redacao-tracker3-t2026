@@ -745,6 +745,27 @@
   .tipo-quadro { background: var(--c-gray-bg); color: var(--text-muted); border-color: var(--border); }
   .tipo-slide { background: rgba(127,29,29,0.15); color: #b45252; border-color: rgba(127,29,29,0.4); }
   .tipo-podcast { background: rgba(30,215,96,0.15); color: #1ed760; border-color: rgba(30,215,96,0.4); }
+
+    /* REPERTÓRIO CHIPS (Propostas) */
+  .repertorio-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.85rem;
+  }
+
+  .repertorio-chip {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    border-width: 1px;
+    border-style: solid;
+    text-decoration: none;
+    line-height: 1.3;
+  }
+
+  a.repertorio-chip:hover { text-decoration: underline; }
 </style>
 
 </head>
@@ -947,7 +968,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzGgRMaea1UXw9TwEGaZRWV0LDO99Ul-7lK-xaNIbde1RoonQUN8DFmkJ9pGVpAo8m2pA/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykAb62qtq0hRPOJNhCgjZC4mYgElWpp5EN_XYtRNX_NMPGp4jVVQSV-zxTfxiVuorGQA/exec';
 
 let appData = null;
 let turmaFilter = 'todas';
@@ -1592,6 +1613,21 @@ if (!proposalId) {
     return vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : null;
   });
 
+    const repsDaProposta = (appData.repertorio || []).filter(r =>
+    (r.propostas || []).some(id => id.toLowerCase() === proposalId.toLowerCase())
+  );
+
+  const chipsHtml = repsDaProposta.length ? `
+    <div class="repertorio-chips">
+      ${repsDaProposta.map(r => {
+        const cls = `repertorio-chip ${tipoToClass(r.tipo)}`;
+        const titleAttr = (r.nota || r.titulo).replace(/"/g, '&quot;');
+        return r.link
+          ? `<a href="${r.link}" target="_blank" rel="noopener" class="${cls}" title="${titleAttr}">${r.titulo}</a>`
+          : `<span class="${cls}" title="${titleAttr}">${r.titulo}</span>`;
+      }).join('')}
+    </div>
+  ` : '';
   let html = `
     <div class="proposal-detail">
       <div class="proposal-title-big">${proposal.theme}</div>
@@ -1599,6 +1635,7 @@ if (!proposalId) {
         <span>📅 ${proposal.date}</span>
         <span class="axis-tag">${proposal.axis||'—'}</span>
         <span>${scores.length} entrega${scores.length !== 1 ? 's' : ''}</span>
+        ${chipsHtml}
       </div>
     </div>
     <div class="section-title">Média da Turma por Competência</div>
